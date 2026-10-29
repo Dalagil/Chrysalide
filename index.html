@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Chrysalide</title>
+<meta name="theme-color" content="#faf6ef" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#1f1b17" media="(prefers-color-scheme: dark)">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<style>
+:root{--bg:#faf6ef;--card:#fff;--tx:#2b2620;--mu:#7a6f62;--ac:#5f6a47;--ac2:#e3e8d3;--bd:#e5dccf;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#1f1b17;--card:#2a2520;--tx:#f0e9df;--mu:#a99d8e;--ac:#6f7d52;--ac2:#34402b;--bd:#3d362f;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#1f1b17;--card:#2a2520;--tx:#f0e9df;--mu:#a99d8e;--ac:#6f7d52;--ac2:#34402b;--bd:#3d362f;color-scheme:dark}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:17px/1.5 Georgia,'Times New Roman',serif;max-width:640px;margin-inline:auto;padding:16px}
+h1{font-size:26px;margin:4px 0 12px}
+input,textarea,select,button{font:inherit;color:inherit}
+input,textarea,select{width:100%;padding:11px;border:1px solid var(--bd);border-radius:10px;background:var(--card);margin-bottom:10px}
+textarea{min-height:200px}
+button{border:0;border-radius:10px;padding:11px 16px;background:var(--ac);color:#fff;cursor:pointer}
+button.s{background:var(--ac2);color:var(--tx)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:4px 0 12px}
+.chip{white-space:nowrap;background:var(--ac2);color:var(--tx);border-radius:20px;padding:7px 14px}
+.chip.on{background:var(--ac);color:#fff}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:10px;cursor:pointer}
+.card b{display:block}.tag{font-size:14px;color:var(--mu)}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+pre{white-space:pre-wrap;font:inherit;margin:12px 0}
+.note{color:var(--mu);font-size:15px;text-align:center;margin:30px 0}
+.hide{display:none}
+.hm{text-align:center;padding:36px 0 18px}.hm h1{font-size:40px;letter-spacing:1px;margin:6px 0}.hm .sub{color:var(--mu);font-style:italic}.menu button{display:block;width:100%;text-align:left;margin-bottom:10px;padding:16px}.menu button:disabled{opacity:.45}
+img{max-width:100%;border-radius:10px;margin:8px 0;display:block}
+.rem{background:var(--ac2);border-radius:10px;padding:10px 12px;white-space:pre-wrap;margin-bottom:12px}
+</style>
+</head>
+<body>
+<div id="home">
+  <div class="hm"><svg width="120" height="120" viewBox="-92 -92 184 184" role="img" aria-label="Logo Chrysalide" style="display:block;margin:0 auto 6px"><circle cx="0" cy="0" r="90" fill="#e9dfcb" stroke="#cbbd9f" stroke-width="1.5"/><path d="M37 -31 A48 48 0 1 0 37 31" fill="none" stroke="#6b4a33" stroke-width="12" stroke-linecap="round"/><path d="M37 -31 C30 -38 24 -30 17 -35 C11 -39 4 -34 -4 -38" fill="none" stroke="#3d2a1d" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 -31 C28 -26 31 -24 34 -22" fill="none" stroke="#3d2a1d" stroke-width="3" stroke-linecap="round"/><g transform="translate(17,-35) rotate(22)"><path d="M0 0 L0 7" fill="none" stroke="#3d2a1d" stroke-width="1.5"/><path d="M0 7 C-9 11 -12 23 -10 34 C-8 45 -4 50 0 55 C4 50 8 45 10 34 C12 23 9 11 0 7 Z" fill="#8c9a6b"/><path d="M-10 20 C-4 24 4 24 10 20" fill="none" stroke="#5f6a47" stroke-width="1.5"/><path d="M-9 32 C-3 36 4 36 10 32" fill="none" stroke="#5f6a47" stroke-width="1.5"/></g><circle cx="42" cy="8" r="5" fill="#d4a93a"/></svg><h1>Chrysalide</h1><div class="sub">Organisateur de savoirs</div></div>
+  <div class="menu">
+    <button id="mf">📒 Mes fiches</button>
+    <button id="ma">＋ Nouvelle fiche</button>
+    <button id="ms">🔍 Rechercher</button>
+    <button id="mc">🗂️ Nouvelle catégorie</button>
+    <button disabled>🤝 Partager avec une amie — bientôt</button>
+    <button id="mb">💾 Sauvegarde</button>
+  </div>
+</div>
+<div id="list" class="hide">
+  <div class="row" style="margin:0 0 8px"><button class="s" id="gohome">← Accueil</button></div>
+  <h1>📒 Mes fiches</h1>
+  <input id="q" type="search" placeholder="Rechercher (béchamel, enduit…)">
+  <div class="chips" id="chips"></div>
+  <div id="cards"></div>
+  <div class="row"><button id="add">＋ Nouvelle fiche</button><button class="s" id="addcat">Nouvelle catégorie</button></div>
+  <p class="note" id="warn"></p>
+</div>
+<div id="edit" class="hide">
+  <h1 id="et">Nouvelle fiche</h1>
+  <input id="t" placeholder="Titre (ex. Béchamel au micro-ondes)">
+  <select id="c"></select>
+  <textarea id="b" placeholder="Ingrédients, proportions, étapes, astuces… ou recopiez la recette de votre amie."></textarea>
+  <input id="s" placeholder="D’où ça vient ? (ex. recette de Martine)">
+  <textarea id="m" style="min-height:90px" placeholder="Mes remarques (ex. j’ai ajouté de la crème fraîche liquide au lait entier)"></textarea>
+  <div class="tag">📷 Photo (facultatif)</div>
+  <input id="p" type="file" accept="image/*"><img id="pp" class="hide" alt="">
+  <div class="row"><button id="save">Enregistrer</button><button class="s" id="cancel">Annuler</button></div>
+</div>
+<div id="view" class="hide">
+  <div class="row" style="margin:0 0 8px"><button class="s" id="back">← Retour</button></div>
+  <h1 id="vt"></h1><div class="tag" id="vm"></div><img id="vp" class="hide" alt=""><pre id="vb"></pre><div id="vc"></div>
+  <div class="row"><button id="edt">Modifier</button><button class="s" id="shr">Partager</button><button class="s" id="del">Supprimer</button></div>
+</div>
+<div id="bk" class="hide">
+  <div class="row" style="margin:0 0 8px"><button class="s" id="bkback">← Accueil</button></div>
+  <h1>💾 Sauvegarde</h1>
+  <p class="tag">Exporter : préparez le texte, copiez-le ou enregistrez-le dans un fichier, et gardez-le en lieu sûr. Importer : collez ce texte ci-dessous puis touchez « Importer ». Vos fiches actuelles ne sont pas effacées.</p>
+  <textarea id="bkt" style="min-height:160px" placeholder="Le texte de sauvegarde apparaît ici, ou collez-en un pour importer."></textarea>
+  <div class="row"><button id="bkx">Préparer et copier</button><button class="s" id="bkf">Enregistrer un fichier</button><button class="s" id="bki">Importer le texte collé</button></div>
+  <div class="tag" style="margin-top:14px">Ou choisir un fichier de sauvegarde :</div>
+  <input id="bkp" type="file" accept=".json,.txt,application/json,text/plain">
+  <p class="note" id="bkm"></p>
+</div>
+<script>
+var DEF=["Recettes","Bricolage","Couture","Tapisserie","Jardin"];
+var notes=[],cats=[],cur="Toutes",open=null,col=null,metaDoc=null,mem=false,photo="";
+var $=function(i){return document.getElementById(i)};
+function showPrev(){var e=$("pp");if(photo){e.src=photo;e.classList.remove("hide")}else e.classList.add("hide")}
+$("p").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);photo=c.toDataURL("image/jpeg",0.6);showPrev()};im.src=r.result};r.readAsDataURL(f)};
+function persist(){try{localStorage.setItem("carnet",JSON.stringify({notes:notes,cats:cats}))}catch(e){alert("Mémoire pleine : supprimez des photos ou des fiches.")}}
+function fallback(){mem=true;try{var x=JSON.parse(localStorage.getItem("carnet")||"{}");notes=x.notes||[];cats=x.cats||[]}catch(e){}$("warn").textContent="Fiches sauvegardées sur cet appareil et ce navigateur uniquement.";render()}
+function show(v){["home","list","edit","view","bk"].forEach(function(x){$(x).classList.toggle("hide",x!==v)})}
+function allCats(){var s=DEF.concat(cats);notes.forEach(function(n){if(s.indexOf(n.cat)<0)s.push(n.cat)});return s}
+function render(){
+  var ch=["Toutes"].concat(allCats());
+  $("chips").innerHTML="";
+  ch.forEach(function(c){var b=document.createElement("button");b.className="chip"+(c===cur?" on":"");b.textContent=c;b.onclick=function(){cur=c;render()};$("chips").appendChild(b)});
+  var q=$("q").value.toLowerCase();
+  var r=notes.filter(function(n){return(cur==="Toutes"||n.cat===cur)&&(n.title+" "+n.body+" "+(n.src||"")+" "+(n.com||"")).toLowerCase().indexOf(q)>=0});
+  r.sort(function(a,b){return(b.ts||0)-(a.ts||0)});
+  $("cards").innerHTML="";
+  if(!r.length){$("cards").innerHTML='<p class="note">Rien ici pour l’instant.</p>'}
+  r.forEach(function(n){var d=document.createElement("div");d.className="card";var b=document.createElement("b");b.textContent=n.title;var t=document.createElement("span");t.className="tag";t.textContent=n.cat+(n.src?" · "+n.src:"");d.appendChild(b);d.appendChild(t);d.onclick=function(){openNote(n)};$("cards").appendChild(d)});
+}
+function openNote(n){open=n;$("vt").textContent=n.title;$("vm").textContent=n.cat+(n.src?" · "+n.src:"");$("vb").textContent=n.body;var vp=$("vp");if(n.photo){vp.src=n.photo;vp.classList.remove("hide")}else vp.classList.add("hide");var vc=$("vc");if(n.com){vc.className="rem";vc.textContent="✏️ "+n.com}else{vc.className="";vc.textContent=""}show("view")}
+function fillSel(v){$("c").innerHTML="";allCats().forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;$("c").appendChild(o)});if(v)$("c").value=v}
+function edit(n){open=n;$("et").textContent=n?"Modifier la fiche":"Nouvelle fiche";$("t").value=n?n.title:"";$("b").value=n?n.body:"";$("s").value=n&&n.src||"";$("m").value=n&&n.com||"";photo=n&&n.photo||"";$("p").value="";showPrev();fillSel(n?n.cat:(cur!=="Toutes"?cur:"Recettes"));show("edit")}
+$("add").onclick=function(){edit(null)};
+$("edt").onclick=function(){edit(open)};
+$("cancel").onclick=function(){show("list")};
+$("back").onclick=function(){show("list")};
+$("q").oninput=render;
+$("gohome").onclick=function(){show("home")};
+$("mf").onclick=function(){cur="Toutes";render();show("list")};
+$("ma").onclick=function(){edit(null)};
+$("ms").onclick=function(){cur="Toutes";render();show("list");$("q").focus()};
+$("mc").onclick=function(){$("addcat").onclick();show("list")};
+$("mb").onclick=function(){$("bkm").textContent="";show("bk")};
+$("bkback").onclick=function(){show("home")};
+function bkData(){return JSON.stringify({app:"chrysalide",v:1,cats:cats,notes:notes.map(function(n){var o={};for(var k in n)if(k!=="id")o[k]=n[k];return o})})}
+$("bkx").onclick=function(){var t=$("bkt");t.value=bkData();t.focus();t.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}$("bkm").textContent=ok?"Texte copié. Collez-le dans une note ou un e-mail pour le garder.":"Texte préparé. Si la copie n’a pas eu lieu, touchez le texte, « Tout sélectionner », puis « Copier »."};
+$("bkf").onclick=function(){try{var b=new Blob([bkData()],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="chrysalide-sauvegarde.json";document.body.appendChild(a);a.click();a.remove();$("bkm").textContent="Fichier demandé : cherchez « chrysalide-sauvegarde.json » dans Téléchargements."}catch(e){$("bkm").textContent="L’enregistrement d’un fichier ne marche pas ici : utilisez « Préparer et copier »."}};
+function imp(txt){var d;try{d=JSON.parse(txt)}catch(e){$("bkm").textContent="Ce texte n’est pas une sauvegarde valide.";return}
+ var arr=d&&d.notes;if(!Array.isArray(arr)){$("bkm").textContent="Aucune fiche trouvée dans ce texte.";return}
+ var n=0;arr.forEach(function(x){if(!x||!x.title)return;if(notes.some(function(y){return y.title===x.title&&y.ts===x.ts}))return;var o={};for(var k in x)o[k]=x[k];delete o.id;if(col){col.add(o)}else{o.id=String(Date.now())+"_"+n;notes.push(o)}n++});
+ (d.cats||[]).forEach(function(c){if(allCats().indexOf(c)<0)cats.push(c)});
+ if(col){if(metaDoc)metaDoc.set({list:cats}).catch(function(){})}else persist();
+ render();$("bkm").textContent=n+" fiche(s) importée(s)."}
+$("bki").onclick=function(){imp($("bkt").value)};
+$("bkp").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){imp(r.result)};r.readAsText(f)};
+$("addcat").onclick=function(){var n=(prompt("Nom de la nouvelle catégorie ?")||"").trim();if(!n||allCats().indexOf(n)>=0)return;cats.push(n);cur=n;if(metaDoc)metaDoc.set({list:cats}).catch(function(){});else persist();render()};
+$("save").onclick=function(){
+  var t=$("t").value.trim();if(!t){$("t").focus();return}
+  var o={title:t,cat:$("c").value,body:$("b").value,src:$("s").value.trim(),com:$("m").value.trim(),photo:photo,ts:Date.now()};
+  if(col){var p=open&&open.id?col.doc(open.id).set(o):col.add(o);p.catch(function(){alert("L’enregistrement a échoué.")})}
+  else{if(open){Object.assign(open,o)}else{o.id=String(Date.now());notes.push(o)}persist();render()}
+  show("list");
+};
+$("del").onclick=function(){
+  if(!confirm("Supprimer cette fiche ?"))return;
+  if(col&&open.id)col.doc(open.id).delete();else{notes=notes.filter(function(x){return x!==open});persist()}
+  render();show("list");
+};
+$("shr").onclick=function(){
+  var txt=open.title+"\n\n"+open.body+(open.src?"\n\n("+open.src+")":"");
+  if(navigator.share){navigator.share({title:open.title,text:txt}).catch(function(){})}
+  else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert("Fiche copiée : collez-la dans un message.")})}
+};
+render();show("home");
+// Version hébergée : les fiches sont enregistrées dans ce navigateur (localStorage).
+fallback();
+// Demande au navigateur de ne pas effacer les fiches pour faire de la place.
+try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){})}catch(e){}
+// Ouverture sans réseau et installation comme application.
+if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
+</script>
+</body>
+</html>
