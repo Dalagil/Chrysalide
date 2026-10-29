@@ -1,7 +1,7 @@
 // Service worker de Chrysalide.
 // À CHAQUE MISE À JOUR d'un fichier du site, augmenter VERSION (v1 → v2 → v3…).
 // Les fiches ne sont pas concernées : elles restent dans le navigateur, pas dans ce cache.
-const VERSION = "v1";
+const VERSION = "v2";
 const CACHE = "chrysalide-" + VERSION;
 const FILES = [
   "./",

@@ -36,6 +36,12 @@ img{max-width:100%;border-radius:10px;margin:8px 0;display:block}
 </style>
 </head>
 <body>
+<div id="nb" class="hide" style="background:#f6e3c1;color:#3d2a1d;border:1px solid #d4a93a;border-radius:12px;padding:14px;margin-bottom:14px">
+  <b style="display:block;margin-bottom:6px">⚠️ Ouvrez Chrysalide dans Chrome</b>
+  <div style="font-size:15px">Vous êtes dans un autre navigateur. Les fiches enregistrées ici ne seraient pas retrouvées dans Chrome.</div>
+  <div class="row"><button id="nbo">Ouvrir dans Chrome</button><button class="s" id="nbc">Copier le lien</button><button class="s" id="nbx">Continuer ici</button></div>
+  <div id="nbm" style="font-size:14px;margin-top:6px"></div>
+</div>
 <div id="home">
   <div class="hm"><svg width="120" height="120" viewBox="-92 -92 184 184" role="img" aria-label="Logo Chrysalide" style="display:block;margin:0 auto 6px"><circle cx="0" cy="0" r="90" fill="#e9dfcb" stroke="#cbbd9f" stroke-width="1.5"/><path d="M37 -31 A48 48 0 1 0 37 31" fill="none" stroke="#6b4a33" stroke-width="12" stroke-linecap="round"/><path d="M37 -31 C30 -38 24 -30 17 -35 C11 -39 4 -34 -4 -38" fill="none" stroke="#3d2a1d" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 -31 C28 -26 31 -24 34 -22" fill="none" stroke="#3d2a1d" stroke-width="3" stroke-linecap="round"/><g transform="translate(17,-35) rotate(22)"><path d="M0 0 L0 7" fill="none" stroke="#3d2a1d" stroke-width="1.5"/><path d="M0 7 C-9 11 -12 23 -10 34 C-8 45 -4 50 0 55 C4 50 8 45 10 34 C12 23 9 11 0 7 Z" fill="#8c9a6b"/><path d="M-10 20 C-4 24 4 24 10 20" fill="none" stroke="#5f6a47" stroke-width="1.5"/><path d="M-9 32 C-3 36 4 36 10 32" fill="none" stroke="#5f6a47" stroke-width="1.5"/></g><circle cx="42" cy="8" r="5" fill="#d4a93a"/></svg><h1>Chrysalide</h1><div class="sub">Organisateur de savoirs</div></div>
   <div class="menu">
@@ -148,6 +154,22 @@ $("shr").onclick=function(){
   else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert("Fiche copiée : collez-la dans un message.")})}
 };
 render();show("home");
+// Avertit si la page est ouverte sur Android ailleurs que dans Chrome
+// (navigateur intégré de Facebook, Messenger, Instagram…, Samsung Internet, navigateur Huawei, Firefox…).
+(function(){
+  var ua=navigator.userAgent||"";
+  if(!/Android/i.test(ua))return;
+  var chrome=/Chrome\//.test(ua)&&!/; wv\)|Version\/[\d.]+ Chrome|SamsungBrowser|HuaweiBrowser|HeyTapBrowser|MiuiBrowser|EdgA|OPR|Opera|YaBrowser|UCBrowser|DuckDuckGo|FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat/i.test(ua);
+  if(chrome)return;
+  try{if(sessionStorage.getItem("nbx"))return}catch(e){}
+  var url=location.href.split("#")[0];
+  $("nb").classList.remove("hide");
+  $("nbo").onclick=function(){location.href="intent://"+url.replace(/^https?:\/\//,"")+"#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url="+encodeURIComponent(url)+";end";
+    setTimeout(function(){$("nbm").textContent="Si Chrome ne s’est pas ouvert : touchez « Copier le lien », ouvrez Chrome et collez le lien dans la barre d’adresse."},1500)};
+  $("nbc").onclick=function(){var ok=function(){$("nbm").textContent="Lien copié. Ouvrez Chrome et collez-le dans la barre d’adresse."};
+    if(navigator.clipboard)navigator.clipboard.writeText(url).then(ok,function(){$("nbm").textContent=url});else $("nbm").textContent=url};
+  $("nbx").onclick=function(){try{sessionStorage.setItem("nbx","1")}catch(e){}$("nb").classList.add("hide")};
+})();
 // Version hébergée : les fiches sont enregistrées dans ce navigateur (localStorage).
 fallback();
 // Demande au navigateur de ne pas effacer les fiches pour faire de la place.
