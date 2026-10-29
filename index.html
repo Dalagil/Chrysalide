@@ -154,16 +154,20 @@ $("shr").onclick=function(){
   else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert("Fiche copiée : collez-la dans un message.")})}
 };
 render();show("home");
-// Avertit si la page est ouverte sur Android ailleurs que dans Chrome
-// (navigateur intégré de Facebook, Messenger, Instagram…, Samsung Internet, navigateur Huawei, Firefox…).
+// Avertit si la page est ouverte ailleurs que dans Chrome, sur téléphone Android comme sur ordinateur
+// (navigateur intégré de Facebook, Messenger…, Samsung Internet, navigateur Huawei, Firefox, Edge, Opera, Brave…).
+// Sur iPhone et iPad, pas d'avertissement : on y installe les applis depuis Safari.
 (function(){
   var ua=navigator.userAgent||"";
-  if(!/Android/i.test(ua))return;
-  var chrome=/Chrome\//.test(ua)&&!/; wv\)|Version\/[\d.]+ Chrome|SamsungBrowser|HuaweiBrowser|HeyTapBrowser|MiuiBrowser|EdgA|OPR|Opera|YaBrowser|UCBrowser|DuckDuckGo|FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat/i.test(ua);
+  if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))return;
+  var android=/Android/i.test(ua);
+  var chrome=/Chrome\//.test(ua)&&!navigator.brave&&!/; wv\)|Version\/[\d.]+ Chrome|SamsungBrowser|HuaweiBrowser|HeyTapBrowser|MiuiBrowser|EdgA|Edg\/|OPR|Opera|YaBrowser|UCBrowser|Vivaldi|DuckDuckGo|FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat/i.test(ua);
   if(chrome)return;
   try{if(sessionStorage.getItem("nbx"))return}catch(e){}
   var url=location.href.split("#")[0];
   $("nb").classList.remove("hide");
+  if(!android){$("nbo").classList.add("hide");
+    $("nb").querySelector("div").textContent="Vous êtes dans un autre navigateur que Chrome. Les fiches enregistrées ici ne seraient pas retrouvées dans Chrome. Copiez le lien et ouvrez-le dans Chrome."}
   $("nbo").onclick=function(){location.href="intent://"+url.replace(/^https?:\/\//,"")+"#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url="+encodeURIComponent(url)+";end";
     setTimeout(function(){$("nbm").textContent="Si Chrome ne s’est pas ouvert : touchez « Copier le lien », ouvrez Chrome et collez le lien dans la barre d’adresse."},1500)};
   $("nbc").onclick=function(){var ok=function(){$("nbm").textContent="Lien copié. Ouvrez Chrome et collez-le dans la barre d’adresse."};
