@@ -1,46 +1,58 @@
 # Chrysalide
 
-Carnet personnel (recettes, bricolage, couture, jardin…), installable comme une application sur le téléphone. Aucune dépendance, aucun serveur, aucune IA : tout se passe dans le navigateur.
+Carnet familial de fiches (recettes, bricolage, couture, jardin…), installable comme une application. Les fiches sont enregistrées sur le serveur (MySQL) et retrouvées sur n'importe quel appareil ou navigateur. Le carnet garde aussi une copie sur l'appareil : il fonctionne sans réseau et se synchronise au retour de la connexion.
 
-## Contenu
+## Fichiers
 
-| Fichier | Rôle |
-|---|---|
-| `index.html` | Le carnet (fiches stockées dans le `localStorage` du navigateur) |
-| `manifest.webmanifest` | Nom, icônes, affichage en appli |
-| `sw.js` | Service worker : ouverture sans réseau, mises à jour |
-| `icon-192.png`, `icon-512.png` | Icônes de l'appli |
-| `icon-maskable-512.png` | Icône pour Android (forme adaptée par le système) |
-| `apple-touch-icon.png`, `favicon-32.png` | Icône iPhone et onglet |
+| Fichier | Rôle | À déposer sur IONOS ? |
+|---|---|---|
+| `index.html` | Le carnet | oui |
+| `sw.js`, `manifest.webmanifest`, `*.png` | Appli installable, hors ligne, icônes | oui |
+| `api.php`, `lib.php` | API de synchronisation | oui |
+| `admin.php` | Créer les carnets et les codes personnels | oui |
+| `.htaccess` | HTTPS forcé, fichiers sensibles bloqués | oui |
+| `config.example.php` | Modèle → à copier en `config.php` **sur le serveur** | `config.php` seulement |
+| `serveur/schema.sql` | Création des tables (une fois, dans phpMyAdmin) | non |
 
-## Mise en ligne sur GitHub Pages
+## Installation sur IONOS (hébergement mutualisé)
 
-> ⚠️ L'adresse finale sera `https://NOMDUCOMPTE.github.io/chrysalide/`. Les fiches sont liées à cette adresse : **ne plus renommer ni le compte ni le dépôt** une fois que ta mère a commencé à s'en servir, sinon le carnet apparaîtra vide (les fiches resteraient récupérables via la Sauvegarde, mais autant l'éviter).
+### 1. Base de données
+1. Espace client IONOS → **Hébergement** → **Bases de données** → créer une base MySQL (ou réutiliser une existante : toutes les tables commencent par `chry_`).
+2. Ouvrir **phpMyAdmin** sur cette base → onglet **SQL** → coller le contenu de `serveur/schema.sql` → **Exécuter**.
+3. Noter le nom d'hôte, le nom de la base, l'utilisateur et le mot de passe.
 
-1. Sur github.com, connecté au compte : bouton **New** (nouveau dépôt).
-2. Nom : `chrysalide`. Visibilité : **Public** (obligatoire pour Pages en gratuit ; seul le code est public, pas les fiches). Ne rien cocher d'autre. **Create repository**.
-3. Sur la page du dépôt vide : lien **uploading an existing file**. Glisser **tous les fichiers** du dossier (pas le dossier lui-même : `index.html` doit être à la racine). **Commit changes**.
-4. **Settings** → **Pages** (menu de gauche) → *Source* : **Deploy from a branch** → Branch : **main**, dossier **/ (root)** → **Save**.
-5. Attendre 1 à 2 minutes, recharger la page Settings → Pages : l'adresse s'affiche en haut. L'ouvrir pour vérifier.
+### 2. Sous-domaine et HTTPS
+1. **Domaines & SSL** → ajouter un sous-domaine, par ex. `chrysalide.mondomaine.fr`, pointant vers un **nouveau dossier** de l'hébergement (ex. `/chrysalide`).
+2. Activer le **certificat SSL** sur ce sous-domaine (le certificat gratuit suffit). Sans HTTPS, l'appli ne s'installe pas et ne marche pas hors ligne.
+
+### 3. Fichiers
+1. Déposer dans le dossier (SFTP / VS Code) tous les fichiers marqués « oui », **`.htaccess` compris** (fichier caché).
+2. Sur le serveur, copier `config.example.php` en `config.php` et le remplir : infos MySQL + un mot de passe admin long.
+
+### 4. Créer les carnets
+1. Ouvrir `https://chrysalide.mondomaine.fr/admin.php`, puis entrer le mot de passe admin.
+2. **Nouveau carnet** → « Claudie » → le code personnel s'affiche (ex. `K7MQ-R4TX`). **Le noter** : il ne sera plus affiché. S'il est perdu, « Nouveau code » en crée un autre (l'ancien cesse de marcher).
+3. Un carnet par personne : chacun ne voit que ses fiches.
+
+### 5. Vérifier
+- `https://…/config.php` doit renvoyer **403** (interdit) et `https://…/serveur/schema.sql` **404**.
+- Ouvrir `https://…/`, taper le code : « ✓ Carnet à jour et sauvegardé » doit s'afficher.
+
+## Pour ta mère (une seule fois)
+1. Dans l'ancien carnet (dalagil.github.io/Chrysalide) : 💾 Sauvegarde → **Préparer et copier** → coller dans un e-mail à elle-même.
+2. Ouvrir la nouvelle adresse dans Chrome → taper son code → menu ⋮ → **Installer l'application**.
+3. Dans la nouvelle appli : 💾 Sauvegarde → coller → **Importer le texte collé**. Les fiches partent sur le serveur.
+4. Supprimer l'ancienne icône Chrysalide de l'écran d'accueil pour ne pas confondre.
 
 ## Mettre à jour plus tard
+1. Remplacer les fichiers modifiés sur le serveur.
+2. **Dans `sw.js`, augmenter `VERSION`** (`"v4"` → `"v5"`…), sinon les téléphones gardent l'ancienne version.
 
-1. Remplacer le fichier modifié dans le dépôt (Add file → Upload files).
-2. **Dans `sw.js`, augmenter `VERSION`** (`"v1"` → `"v2"`…) et l'envoyer aussi.
-3. Sur le téléphone, la nouvelle version arrive à la prochaine ouverture avec du réseau (au pire à la deuxième). Les fiches ne sont pas touchées.
+## Comment marche la synchro
+- Chaque fiche a un identifiant et une date de modification. Si la même fiche est modifiée sur deux appareils, **la modification la plus récente l'emporte**.
+- Les changements faits hors ligne sont mis en attente (« ⏳ N modifications en attente ») et partent automatiquement au retour du réseau, à l'ouverture de l'appli et toutes les minutes.
+- Les fiches supprimées sont aussi supprimées sur les autres appareils.
+- « Fermer le carnet sur cet appareil » (en bas de 💾 Sauvegarde) efface la copie locale ; tout reste sur le serveur.
 
-## Transférer les fiches de l'ancienne page Claude
-
-L'ancienne page a déjà le menu 💾 **Sauvegarde** :
-
-1. Ouvrir l'ancienne page (depuis la conversation Claude, là où elle fonctionne) → 💾 Sauvegarde → **Préparer et copier**.
-2. Coller ce texte quelque part de sûr (note, e-mail à soi-même) : c'est aussi une sauvegarde.
-3. Ouvrir la nouvelle appli → 💾 Sauvegarde → coller le texte dans le cadre → **Importer le texte collé**.
-
-Une fiche déjà présente (même titre, même date) n'est pas importée deux fois.
-
-## Limites connues
-
-- Les fiches restent **sur ce téléphone, dans ce navigateur**. Désinstaller l'appli ou « effacer les données du site » dans Chrome les supprime : faire une Sauvegarde régulièrement.
-- Le `localStorage` est limité à environ 5 Mo. Une photo réduite pèse environ 50 à 100 Ko : on peut compter quelques dizaines de fiches avec photo avant le message « Mémoire pleine ». Si ça devient gênant : passer le stockage en IndexedDB (beaucoup plus de place), à faire dans une prochaine version.
-- Testé dans Chromium (ordinateur) : installation, enregistrement, import, ouverture hors ligne. **Pas testé sur un Huawei.**
+## Sauvegarde du serveur
+IONOS sauvegarde les bases, mais un export de temps en temps ne fait pas de mal : phpMyAdmin → **Exporter** sur les tables `chry_*`.

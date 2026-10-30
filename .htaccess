@@ -1,0 +1,26 @@
+# Chrysalide — réglages Apache (IONOS)
+
+# Toujours en HTTPS (obligatoire pour installer l'appli). À activer une fois le certificat SSL en place.
+RewriteEngine On
+RewriteCond %{HTTPS} !=on
+RewriteCond %{HTTP:X-Forwarded-Proto} !=https
+RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Fichiers qui ne doivent jamais être servis
+<FilesMatch "^(config\.php|config\.example\.php|lib\.php|.*\.sql|.*\.md|\.git.*)$">
+  Require all denied
+</FilesMatch>
+RedirectMatch 404 /\.git
+RedirectMatch 404 /serveur/
+
+# Le manifeste avec le bon type
+AddType application/manifest+json .webmanifest
+
+# Le service worker et la page doivent toujours être revérifiés (sinon les mises à jour traînent)
+<IfModule mod_headers.c>
+  <FilesMatch "^(sw\.js|index\.html)$">
+    Header set Cache-Control "no-cache"
+  </FilesMatch>
+</IfModule>
+
+Options -Indexes

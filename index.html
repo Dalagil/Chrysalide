@@ -32,18 +32,24 @@ pre{white-space:pre-wrap;font:inherit;margin:12px 0}
 .hide{display:none}
 .hm{text-align:center;padding:36px 0 18px}.hm h1{font-size:40px;letter-spacing:1px;margin:6px 0}.hm .sub{color:var(--mu);font-style:italic}.menu button{display:block;width:100%;text-align:left;margin-bottom:10px;padding:16px}.menu button:disabled{opacity:.45}
 img{max-width:100%;border-radius:10px;margin:8px 0;display:block}
+.st{text-align:center;font-size:14px;color:var(--mu);margin:4px 0 14px;min-height:1.5em}.st.err{color:#a5512b}
+.login{max-width:360px;margin:0 auto}.login input{text-align:center;font:600 24px/1.3 ui-monospace,monospace;letter-spacing:3px;text-transform:uppercase}
 .rem{background:var(--ac2);border-radius:10px;padding:10px 12px;white-space:pre-wrap;margin-bottom:12px}
 </style>
 </head>
 <body>
-<div id="nb" class="hide" style="background:#f6e3c1;color:#3d2a1d;border:1px solid #d4a93a;border-radius:12px;padding:14px;margin-bottom:14px">
-  <b style="display:block;margin-bottom:6px">⚠️ Ouvrez Chrysalide dans Chrome</b>
-  <div style="font-size:15px">Vous êtes dans un autre navigateur. Les fiches enregistrées ici ne seraient pas retrouvées dans Chrome.</div>
-  <div class="row"><button id="nbo">Ouvrir dans Chrome</button><button class="s" id="nbc">Copier le lien</button><button class="s" id="nbx">Continuer ici</button></div>
-  <div id="nbm" style="font-size:14px;margin-top:6px"></div>
-</div>
-<div id="home">
+<div id="login" class="hide">
   <div class="hm"><svg width="120" height="120" viewBox="-92 -92 184 184" role="img" aria-label="Logo Chrysalide" style="display:block;margin:0 auto 6px"><circle cx="0" cy="0" r="90" fill="#e9dfcb" stroke="#cbbd9f" stroke-width="1.5"/><path d="M37 -31 A48 48 0 1 0 37 31" fill="none" stroke="#6b4a33" stroke-width="12" stroke-linecap="round"/><path d="M37 -31 C30 -38 24 -30 17 -35 C11 -39 4 -34 -4 -38" fill="none" stroke="#3d2a1d" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 -31 C28 -26 31 -24 34 -22" fill="none" stroke="#3d2a1d" stroke-width="3" stroke-linecap="round"/><g transform="translate(17,-35) rotate(22)"><path d="M0 0 L0 7" fill="none" stroke="#3d2a1d" stroke-width="1.5"/><path d="M0 7 C-9 11 -12 23 -10 34 C-8 45 -4 50 0 55 C4 50 8 45 10 34 C12 23 9 11 0 7 Z" fill="#8c9a6b"/><path d="M-10 20 C-4 24 4 24 10 20" fill="none" stroke="#5f6a47" stroke-width="1.5"/><path d="M-9 32 C-3 36 4 36 10 32" fill="none" stroke="#5f6a47" stroke-width="1.5"/></g><circle cx="42" cy="8" r="5" fill="#d4a93a"/></svg><h1>Chrysalide</h1><div class="sub">Organisateur de savoirs</div></div>
+  <div class="login">
+    <p style="text-align:center">Pour ouvrir votre carnet, tapez votre <b>code personnel</b>.<br><span class="tag">Une seule fois sur cet appareil.</span></p>
+    <input id="lc" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="ABCD-1234" maxlength="12">
+    <button id="lb" style="width:100%">Ouvrir mon carnet</button>
+    <p class="note" id="lm" style="margin:16px 0"></p>
+  </div>
+</div>
+<div id="home" class="hide">
+  <div class="hm"><svg width="120" height="120" viewBox="-92 -92 184 184" role="img" aria-label="Logo Chrysalide" style="display:block;margin:0 auto 6px"><circle cx="0" cy="0" r="90" fill="#e9dfcb" stroke="#cbbd9f" stroke-width="1.5"/><path d="M37 -31 A48 48 0 1 0 37 31" fill="none" stroke="#6b4a33" stroke-width="12" stroke-linecap="round"/><path d="M37 -31 C30 -38 24 -30 17 -35 C11 -39 4 -34 -4 -38" fill="none" stroke="#3d2a1d" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/><path d="M26 -31 C28 -26 31 -24 34 -22" fill="none" stroke="#3d2a1d" stroke-width="3" stroke-linecap="round"/><g transform="translate(17,-35) rotate(22)"><path d="M0 0 L0 7" fill="none" stroke="#3d2a1d" stroke-width="1.5"/><path d="M0 7 C-9 11 -12 23 -10 34 C-8 45 -4 50 0 55 C4 50 8 45 10 34 C12 23 9 11 0 7 Z" fill="#8c9a6b"/><path d="M-10 20 C-4 24 4 24 10 20" fill="none" stroke="#5f6a47" stroke-width="1.5"/><path d="M-9 32 C-3 36 4 36 10 32" fill="none" stroke="#5f6a47" stroke-width="1.5"/></g><circle cx="42" cy="8" r="5" fill="#d4a93a"/></svg><h1>Chrysalide</h1><div class="sub" id="hello">Organisateur de savoirs</div></div>
+  <div class="st" id="st1"></div>
   <div class="menu">
     <button id="mf">📒 Mes fiches</button>
     <button id="ma">＋ Nouvelle fiche</button>
@@ -60,7 +66,7 @@ img{max-width:100%;border-radius:10px;margin:8px 0;display:block}
   <div class="chips" id="chips"></div>
   <div id="cards"></div>
   <div class="row"><button id="add">＋ Nouvelle fiche</button><button class="s" id="addcat">Nouvelle catégorie</button></div>
-  <p class="note" id="warn"></p>
+  <div class="st" id="st2" style="margin-top:20px"></div>
 </div>
 <div id="edit" class="hide">
   <h1 id="et">Nouvelle fiche</h1>
@@ -71,7 +77,7 @@ img{max-width:100%;border-radius:10px;margin:8px 0;display:block}
   <textarea id="m" style="min-height:90px" placeholder="Mes remarques (ex. j’ai ajouté de la crème fraîche liquide au lait entier)"></textarea>
   <div class="tag">📷 Photo (facultatif)</div>
   <input id="p" type="file" accept="image/*"><img id="pp" class="hide" alt="">
-  <div class="row"><button id="save">Enregistrer</button><button class="s" id="cancel">Annuler</button></div>
+  <div class="row"><button id="save">Enregistrer</button><button class="s" id="rmp">Retirer la photo</button><button class="s" id="cancel">Annuler</button></div>
 </div>
 <div id="view" class="hide">
   <div class="row" style="margin:0 0 8px"><button class="s" id="back">← Retour</button></div>
@@ -81,104 +87,189 @@ img{max-width:100%;border-radius:10px;margin:8px 0;display:block}
 <div id="bk" class="hide">
   <div class="row" style="margin:0 0 8px"><button class="s" id="bkback">← Accueil</button></div>
   <h1>💾 Sauvegarde</h1>
-  <p class="tag">Exporter : préparez le texte, copiez-le ou enregistrez-le dans un fichier, et gardez-le en lieu sûr. Importer : collez ce texte ci-dessous puis touchez « Importer ». Vos fiches actuelles ne sont pas effacées.</p>
+  <p class="tag">Vos fiches sont déjà enregistrées automatiquement sur le serveur familial. Cette page sert à en garder une copie supplémentaire, ou à importer une ancienne sauvegarde.</p>
+  <p class="tag">Exporter : préparez le texte, copiez-le ou enregistrez-le dans un fichier. Importer : collez le texte ci-dessous puis touchez « Importer ». Vos fiches actuelles ne sont pas effacées.</p>
   <textarea id="bkt" style="min-height:160px" placeholder="Le texte de sauvegarde apparaît ici, ou collez-en un pour importer."></textarea>
   <div class="row"><button id="bkx">Préparer et copier</button><button class="s" id="bkf">Enregistrer un fichier</button><button class="s" id="bki">Importer le texte collé</button></div>
   <div class="tag" style="margin-top:14px">Ou choisir un fichier de sauvegarde :</div>
   <input id="bkp" type="file" accept=".json,.txt,application/json,text/plain">
   <p class="note" id="bkm"></p>
+  <div style="border-top:1px solid var(--bd);margin-top:30px;padding-top:14px">
+    <div class="tag" id="who"></div>
+    <div class="row"><button class="s" id="out">Fermer le carnet sur cet appareil</button></div>
+  </div>
 </div>
 <script>
 var DEF=["Recettes","Bricolage","Couture","Tapisserie","Jardin"];
-var notes=[],cats=[],cur="Toutes",open=null,col=null,metaDoc=null,mem=false,photo="";
+var API="api.php";
+// État conservé sur l'appareil (IndexedDB) : copie des fiches + modifications pas encore envoyées.
+var S={code:"",name:"",notes:[],cats:[],catsTs:0,catsDirty:false,since:0,dirty:{},gone:{}};
+var cur="Toutes",open=null,photo="",syncing=false,lastErr="",timer=null;
 var $=function(i){return document.getElementById(i)};
-function showPrev(){var e=$("pp");if(photo){e.src=photo;e.classList.remove("hide")}else e.classList.add("hide")}
-$("p").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);photo=c.toDataURL("image/jpeg",0.6);showPrev()};im.src=r.result};r.readAsDataURL(f)};
-function persist(){try{localStorage.setItem("carnet",JSON.stringify({notes:notes,cats:cats}))}catch(e){alert("Mémoire pleine : supprimez des photos ou des fiches.")}}
-function fallback(){mem=true;try{var x=JSON.parse(localStorage.getItem("carnet")||"{}");notes=x.notes||[];cats=x.cats||[]}catch(e){}$("warn").textContent="Fiches sauvegardées sur cet appareil et ce navigateur uniquement.";render()}
-function show(v){["home","list","edit","view","bk"].forEach(function(x){$(x).classList.toggle("hide",x!==v)})}
-function allCats(){var s=DEF.concat(cats);notes.forEach(function(n){if(s.indexOf(n.cat)<0)s.push(n.cat)});return s}
+
+/* ---------- Stockage local (IndexedDB, repli localStorage) ---------- */
+var idb=null;
+function idbOpen(){return new Promise(function(ok){try{var r=indexedDB.open("chrysalide",1);r.onupgradeneeded=function(){r.result.createObjectStore("kv")};r.onsuccess=function(){idb=r.result;ok()};r.onerror=function(){ok()}}catch(e){ok()}})}
+function load(){return new Promise(function(ok){
+  if(idb){try{var q=idb.transaction("kv").objectStore("kv").get("state");q.onsuccess=function(){ok(q.result||null)};q.onerror=function(){ok(null)};return}catch(e){}}
+  try{ok(JSON.parse(localStorage.getItem("chrysalide-state")||"null"))}catch(e){ok(null)}})}
+var saveP=null,saveAgain=false;
+function persist(){
+  if(saveP){saveAgain=true;return}
+  saveP=new Promise(function(ok){
+    var done=function(){saveP=null;if(saveAgain){saveAgain=false;persist()}ok()};
+    if(idb){try{var t=idb.transaction("kv","readwrite");t.objectStore("kv").put(S,"state");t.oncomplete=done;t.onerror=done;t.onabort=done;return}catch(e){}}
+    try{localStorage.setItem("chrysalide-state",JSON.stringify(S))}catch(e){alert("La mémoire de l’appareil est pleine.")}
+    done()});
+}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+
+/* ---------- Affichage ---------- */
+function show(v){["login","home","list","edit","view","bk"].forEach(function(x){$(x).classList.toggle("hide",x!==v)});window.scrollTo(0,0)}
+function allCats(){var s=DEF.concat(S.cats);S.notes.forEach(function(n){if(n.cat&&s.indexOf(n.cat)<0)s.push(n.cat)});return s}
+function pending(){return Object.keys(S.dirty).length+(S.catsDirty?1:0)}
+function status(){
+  var p=pending(),t,err=false;
+  if(syncing)t="Synchronisation…";
+  else if(lastErr){t=lastErr;err=true}
+  else if(p)t="⏳ "+p+" modification"+(p>1?"s":"")+" en attente : envoi dès que le réseau revient.";
+  else t="✓ Carnet à jour et sauvegardé";
+  ["st1","st2"].forEach(function(i){$(i).textContent=t;$(i).classList.toggle("err",err)});
+}
 function render(){
   var ch=["Toutes"].concat(allCats());
   $("chips").innerHTML="";
   ch.forEach(function(c){var b=document.createElement("button");b.className="chip"+(c===cur?" on":"");b.textContent=c;b.onclick=function(){cur=c;render()};$("chips").appendChild(b)});
   var q=$("q").value.toLowerCase();
-  var r=notes.filter(function(n){return(cur==="Toutes"||n.cat===cur)&&(n.title+" "+n.body+" "+(n.src||"")+" "+(n.com||"")).toLowerCase().indexOf(q)>=0});
+  var r=S.notes.filter(function(n){return(cur==="Toutes"||n.cat===cur)&&(n.title+" "+n.body+" "+(n.src||"")+" "+(n.com||"")).toLowerCase().indexOf(q)>=0});
   r.sort(function(a,b){return(b.ts||0)-(a.ts||0)});
   $("cards").innerHTML="";
   if(!r.length){$("cards").innerHTML='<p class="note">Rien ici pour l’instant.</p>'}
   r.forEach(function(n){var d=document.createElement("div");d.className="card";var b=document.createElement("b");b.textContent=n.title;var t=document.createElement("span");t.className="tag";t.textContent=n.cat+(n.src?" · "+n.src:"");d.appendChild(b);d.appendChild(t);d.onclick=function(){openNote(n)};$("cards").appendChild(d)});
+  if(open&&!$("view").classList.contains("hide")){var still=S.notes.filter(function(x){return x.id===open.id})[0];if(still)openNote(still);else show("list")}
+  status();
 }
 function openNote(n){open=n;$("vt").textContent=n.title;$("vm").textContent=n.cat+(n.src?" · "+n.src:"");$("vb").textContent=n.body;var vp=$("vp");if(n.photo){vp.src=n.photo;vp.classList.remove("hide")}else vp.classList.add("hide");var vc=$("vc");if(n.com){vc.className="rem";vc.textContent="✏️ "+n.com}else{vc.className="";vc.textContent=""}show("view")}
 function fillSel(v){$("c").innerHTML="";allCats().forEach(function(c){var o=document.createElement("option");o.value=c;o.textContent=c;$("c").appendChild(o)});if(v)$("c").value=v}
+function showPrev(){var e=$("pp");if(photo){e.src=photo;e.classList.remove("hide")}else e.classList.add("hide");$("rmp").classList.toggle("hide",!photo)}
 function edit(n){open=n;$("et").textContent=n?"Modifier la fiche":"Nouvelle fiche";$("t").value=n?n.title:"";$("b").value=n?n.body:"";$("s").value=n&&n.src||"";$("m").value=n&&n.com||"";photo=n&&n.photo||"";$("p").value="";showPrev();fillSel(n?n.cat:(cur!=="Toutes"?cur:"Recettes"));show("edit")}
+
+/* ---------- Modifications ---------- */
+function changed(){persist();render();soon()}
+$("p").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){var im=new Image();im.onload=function(){var k=Math.min(1,700/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);c.getContext("2d").drawImage(im,0,0,c.width,c.height);photo=c.toDataURL("image/jpeg",0.6);showPrev()};im.src=r.result};r.readAsDataURL(f)};
+$("rmp").onclick=function(){photo="";$("p").value="";showPrev()};
+$("save").onclick=function(){
+  var t=$("t").value.trim();if(!t){$("t").focus();return}
+  var o={title:t,cat:$("c").value,body:$("b").value,src:$("s").value.trim(),com:$("m").value.trim(),photo:photo,ts:Date.now()};
+  if(open){Object.assign(open,o);S.dirty[open.id]=1}else{o.id=uid();S.notes.push(o);S.dirty[o.id]=1}
+  changed();show("list");
+};
+$("del").onclick=function(){
+  if(!confirm("Supprimer cette fiche ?"))return;
+  var id=open.id;S.notes=S.notes.filter(function(x){return x.id!==id});S.gone[id]=Date.now();S.dirty[id]=1;open=null;
+  changed();show("list");
+};
+function addCat(){var n=(prompt("Nom de la nouvelle catégorie ?")||"").trim();if(!n||allCats().indexOf(n)>=0)return;S.cats.push(n);S.catsTs=Date.now();S.catsDirty=true;cur=n;changed()}
+$("addcat").onclick=addCat;
 $("add").onclick=function(){edit(null)};
 $("edt").onclick=function(){edit(open)};
-$("cancel").onclick=function(){show("list")};
-$("back").onclick=function(){show("list")};
+$("cancel").onclick=function(){show(open?"view":"list")};
+$("back").onclick=function(){open=null;show("list")};
 $("q").oninput=render;
 $("gohome").onclick=function(){show("home")};
 $("mf").onclick=function(){cur="Toutes";render();show("list")};
 $("ma").onclick=function(){edit(null)};
 $("ms").onclick=function(){cur="Toutes";render();show("list");$("q").focus()};
-$("mc").onclick=function(){$("addcat").onclick();show("list")};
-$("mb").onclick=function(){$("bkm").textContent="";show("bk")};
+$("mc").onclick=function(){show("list");addCat()};
+$("mb").onclick=function(){$("bkm").textContent="";$("who").textContent="Carnet de "+S.name+" — enregistré sur le serveur familial.";show("bk")};
 $("bkback").onclick=function(){show("home")};
-function bkData(){return JSON.stringify({app:"chrysalide",v:1,cats:cats,notes:notes.map(function(n){var o={};for(var k in n)if(k!=="id")o[k]=n[k];return o})})}
-$("bkx").onclick=function(){var t=$("bkt");t.value=bkData();t.focus();t.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}$("bkm").textContent=ok?"Texte copié. Collez-le dans une note ou un e-mail pour le garder.":"Texte préparé. Si la copie n’a pas eu lieu, touchez le texte, « Tout sélectionner », puis « Copier »."};
-$("bkf").onclick=function(){try{var b=new Blob([bkData()],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="chrysalide-sauvegarde.json";document.body.appendChild(a);a.click();a.remove();$("bkm").textContent="Fichier demandé : cherchez « chrysalide-sauvegarde.json » dans Téléchargements."}catch(e){$("bkm").textContent="L’enregistrement d’un fichier ne marche pas ici : utilisez « Préparer et copier »."}};
-function imp(txt){var d;try{d=JSON.parse(txt)}catch(e){$("bkm").textContent="Ce texte n’est pas une sauvegarde valide.";return}
- var arr=d&&d.notes;if(!Array.isArray(arr)){$("bkm").textContent="Aucune fiche trouvée dans ce texte.";return}
- var n=0;arr.forEach(function(x){if(!x||!x.title)return;if(notes.some(function(y){return y.title===x.title&&y.ts===x.ts}))return;var o={};for(var k in x)o[k]=x[k];delete o.id;if(col){col.add(o)}else{o.id=String(Date.now())+"_"+n;notes.push(o)}n++});
- (d.cats||[]).forEach(function(c){if(allCats().indexOf(c)<0)cats.push(c)});
- if(col){if(metaDoc)metaDoc.set({list:cats}).catch(function(){})}else persist();
- render();$("bkm").textContent=n+" fiche(s) importée(s)."}
-$("bki").onclick=function(){imp($("bkt").value)};
-$("bkp").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){imp(r.result)};r.readAsText(f)};
-$("addcat").onclick=function(){var n=(prompt("Nom de la nouvelle catégorie ?")||"").trim();if(!n||allCats().indexOf(n)>=0)return;cats.push(n);cur=n;if(metaDoc)metaDoc.set({list:cats}).catch(function(){});else persist();render()};
-$("save").onclick=function(){
-  var t=$("t").value.trim();if(!t){$("t").focus();return}
-  var o={title:t,cat:$("c").value,body:$("b").value,src:$("s").value.trim(),com:$("m").value.trim(),photo:photo,ts:Date.now()};
-  if(col){var p=open&&open.id?col.doc(open.id).set(o):col.add(o);p.catch(function(){alert("L’enregistrement a échoué.")})}
-  else{if(open){Object.assign(open,o)}else{o.id=String(Date.now());notes.push(o)}persist();render()}
-  show("list");
-};
-$("del").onclick=function(){
-  if(!confirm("Supprimer cette fiche ?"))return;
-  if(col&&open.id)col.doc(open.id).delete();else{notes=notes.filter(function(x){return x!==open});persist()}
-  render();show("list");
-};
 $("shr").onclick=function(){
   var txt=open.title+"\n\n"+open.body+(open.src?"\n\n("+open.src+")":"");
   if(navigator.share){navigator.share({title:open.title,text:txt}).catch(function(){})}
   else if(navigator.clipboard){navigator.clipboard.writeText(txt).then(function(){alert("Fiche copiée : collez-la dans un message.")})}
 };
-render();show("home");
-// Avertit si la page est ouverte ailleurs que dans Chrome, sur téléphone Android comme sur ordinateur
-// (navigateur intégré de Facebook, Messenger…, Samsung Internet, navigateur Huawei, Firefox, Edge, Opera, Brave…).
-// Sur iPhone et iPad, pas d'avertissement : on y installe les applis depuis Safari.
-(function(){
-  var ua=navigator.userAgent||"";
-  if(/iPhone|iPad|iPod/i.test(ua)||(/Macintosh/.test(ua)&&navigator.maxTouchPoints>1))return;
-  var android=/Android/i.test(ua);
-  var chrome=/Chrome\//.test(ua)&&!navigator.brave&&!/; wv\)|Version\/[\d.]+ Chrome|SamsungBrowser|HuaweiBrowser|HeyTapBrowser|MiuiBrowser|EdgA|Edg\/|OPR|Opera|YaBrowser|UCBrowser|Vivaldi|DuckDuckGo|FBAN|FBAV|FB_IAB|Instagram|Line\/|Snapchat/i.test(ua);
-  if(chrome)return;
-  try{if(sessionStorage.getItem("nbx"))return}catch(e){}
-  var url=location.href.split("#")[0];
-  $("nb").classList.remove("hide");
-  if(!android){$("nbo").classList.add("hide");
-    $("nb").querySelector("div").textContent="Vous êtes dans un autre navigateur que Chrome. Les fiches enregistrées ici ne seraient pas retrouvées dans Chrome. Copiez le lien et ouvrez-le dans Chrome."}
-  $("nbo").onclick=function(){location.href="intent://"+url.replace(/^https?:\/\//,"")+"#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url="+encodeURIComponent(url)+";end";
-    setTimeout(function(){$("nbm").textContent="Si Chrome ne s’est pas ouvert : touchez « Copier le lien », ouvrez Chrome et collez le lien dans la barre d’adresse."},1500)};
-  $("nbc").onclick=function(){var ok=function(){$("nbm").textContent="Lien copié. Ouvrez Chrome et collez-le dans la barre d’adresse."};
-    if(navigator.clipboard)navigator.clipboard.writeText(url).then(ok,function(){$("nbm").textContent=url});else $("nbm").textContent=url};
-  $("nbx").onclick=function(){try{sessionStorage.setItem("nbx","1")}catch(e){}$("nb").classList.add("hide")};
+
+/* ---------- Sauvegarde / import ---------- */
+function bkData(){return JSON.stringify({app:"chrysalide",v:1,cats:S.cats,notes:S.notes.map(function(n){var o={};for(var k in n)if(k!=="id")o[k]=n[k];return o})})}
+$("bkx").onclick=function(){var t=$("bkt");t.value=bkData();t.focus();t.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}$("bkm").textContent=ok?"Texte copié. Collez-le dans une note ou un e-mail pour le garder.":"Texte préparé. Si la copie n’a pas eu lieu, touchez le texte, « Tout sélectionner », puis « Copier »."};
+$("bkf").onclick=function(){try{var b=new Blob([bkData()],{type:"application/json"}),a=document.createElement("a");a.href=URL.createObjectURL(b);a.download="chrysalide-sauvegarde.json";document.body.appendChild(a);a.click();a.remove();$("bkm").textContent="Fichier demandé : cherchez « chrysalide-sauvegarde.json » dans Téléchargements."}catch(e){$("bkm").textContent="L’enregistrement d’un fichier ne marche pas ici : utilisez « Préparer et copier »."}};
+function addNotes(arr){var n=0;arr.forEach(function(x){if(!x||!x.title)return;if(S.notes.some(function(y){return y.title===x.title&&y.ts===x.ts}))return;var o={};for(var k in x)o[k]=x[k];o.id=uid();if(!o.ts)o.ts=Date.now();S.notes.push(o);S.dirty[o.id]=1;n++});return n}
+function imp(txt){var d;try{d=JSON.parse(txt)}catch(e){$("bkm").textContent="Ce texte n’est pas une sauvegarde valide.";return}
+  if(!d||!Array.isArray(d.notes)){$("bkm").textContent="Aucune fiche trouvée dans ce texte.";return}
+  var n=addNotes(d.notes);
+  var nc=false;(d.cats||[]).forEach(function(c){if(allCats().indexOf(c)<0){S.cats.push(c);nc=true}});if(nc){S.catsTs=Date.now();S.catsDirty=true}
+  changed();$("bkm").textContent=n+" fiche(s) importée(s). Elles partent vers le serveur."}
+$("bki").onclick=function(){imp($("bkt").value)};
+$("bkp").onchange=function(){var f=this.files[0];if(!f)return;var r=new FileReader();r.onload=function(){imp(r.result)};r.readAsText(f)};
+$("out").onclick=function(){
+  var p=pending();
+  if(!confirm(p?"Attention : "+p+" modification(s) ne sont pas encore envoyées et seraient perdues. Fermer quand même ?":"Fermer le carnet sur cet appareil ? Vos fiches restent sur le serveur ; il faudra retaper votre code."))return;
+  S={code:"",name:"",notes:[],cats:[],catsTs:0,catsDirty:false,since:0,dirty:{},gone:{}};persist();$("lc").value="";$("lm").textContent="";show("login")};
+
+/* ---------- Serveur ---------- */
+function call(body){return fetch(API,{method:"POST",headers:{"Content-Type":"application/json","X-Chrysalide-Code":S.code},body:JSON.stringify(body),cache:"no-store"})
+  .then(function(r){return r.json().catch(function(){return{}}).then(function(j){j._status=r.status;return j})})}
+function soon(){clearTimeout(timer);timer=setTimeout(sync,800)}
+function merge(list){list.forEach(function(x){
+  var i=-1;S.notes.forEach(function(n,k){if(n.id===x.id)i=k});
+  var local=i>=0?S.notes[i]:null;
+  if(S.dirty[x.id]){var lts=local?local.ts:(S.gone[x.id]||0);if(lts>x.ts)return}
+  if(x.deleted){if(i>=0)S.notes.splice(i,1)}
+  else{var o=x.data||{};o.id=x.id;o.ts=x.ts;if(i>=0)S.notes[i]=o;else S.notes.push(o)}
+  delete S.dirty[x.id];delete S.gone[x.id];
+})}
+async function sync(){
+  if(!S.code||syncing)return;
+  if(navigator.onLine===false){lastErr="";status();return}
+  syncing=true;status();
+  try{
+    for(var guard=0;guard<200;guard++){
+      var ids=Object.keys(S.dirty).slice(0,8),sent={};
+      var changes=ids.map(function(id){var n=S.notes.filter(function(x){return x.id===id})[0];
+        if(n){var d={};for(var k in n)if(k!=="id"&&k!=="ts")d[k]=n[k];sent[id]=n.ts;return{id:id,ts:n.ts,data:d}}
+        var g=S.gone[id]||Date.now();sent[id]=g;return{id:id,ts:g,deleted:true}});
+      var catsSent=S.catsDirty?S.catsTs:0;
+      var r=await call({a:"sync",since:S.since,changes:changes,cats:S.catsDirty?{list:S.cats,ts:S.catsTs}:null});
+      if(r._status===401){lastErr="Code refusé par le serveur : demandez un nouveau code.";S.code="";persist();$("lm").textContent=lastErr;show("login");break}
+      if(r._status!==200){lastErr="Le serveur ne répond pas pour l’instant : vos fiches restent sur cet appareil.";break}
+      (r.accepted||[]).forEach(function(id){var n=S.notes.filter(function(x){return x.id===id})[0];var ts=n?n.ts:S.gone[id];if(ts===sent[id]){delete S.dirty[id];if(!n)delete S.gone[id]}});
+      merge(r.notes||[]);
+      S.since=r.since||S.since;
+      if(r.cats){if(S.catsDirty&&catsSent&&S.catsTs===catsSent&&r.cats.ts>=catsSent)S.catsDirty=false;
+        if(!S.catsDirty&&r.cats.ts>=S.catsTs){S.cats=r.cats.list||[];S.catsTs=r.cats.ts}}
+      lastErr="";persist();
+      if(!r.more&&!Object.keys(S.dirty).length&&!S.catsDirty)break;
+      if(!r.more&&!ids.length&&!S.catsDirty)break;
+    }
+  }catch(e){lastErr=navigator.onLine===false?"":"Pas de connexion au serveur : vos fiches restent sur cet appareil."}
+  syncing=false;render();
+}
+$("lb").onclick=async function(){
+  var c=$("lc").value.trim();if(!c){$("lc").focus();return}
+  $("lb").disabled=true;$("lm").textContent="Vérification…";
+  try{S.code=c;var r=await call({a:"login"});
+    if(r._status===200){S.name=r.name||"";S.since=0;lastErr="";$("hello").textContent="Carnet de "+S.name;persist();show("home");render();sync()}
+    else{S.code="";$("lm").textContent=r._status===401?"Ce code n’est pas reconnu. Vérifiez-le et réessayez.":"Le serveur ne répond pas. Vérifiez la connexion internet et réessayez."}
+  }catch(e){S.code="";$("lm").textContent="Pas de connexion internet. Il en faut une pour ouvrir le carnet la première fois."}
+  $("lb").disabled=false};
+$("lc").onkeydown=function(e){if(e.key==="Enter")$("lb").click()};
+
+/* ---------- Démarrage ---------- */
+(async function(){
+  await idbOpen();
+  var st=await load();
+  if(st)S=Object.assign(S,st);
+  // Fiches d'une ancienne version enregistrées à la même adresse : on les reprend.
+  try{var old=JSON.parse(localStorage.getItem("carnet")||"null");if(old&&Array.isArray(old.notes)&&old.notes.length&&!localStorage.getItem("carnet-repris")){addNotes(old.notes);(old.cats||[]).forEach(function(c){if(S.cats.indexOf(c)<0)S.cats.push(c)});S.catsTs=Date.now();S.catsDirty=true;localStorage.setItem("carnet-repris","1");persist()}}catch(e){}
+  if(!S.code){show("login");return}
+  $("hello").textContent=S.name?"Carnet de "+S.name:"Organisateur de savoirs";
+  render();show("home");sync();
 })();
-// Version hébergée : les fiches sont enregistrées dans ce navigateur (localStorage).
-fallback();
-// Demande au navigateur de ne pas effacer les fiches pour faire de la place.
+window.addEventListener("online",function(){lastErr="";sync()});
+window.addEventListener("offline",status);
+document.addEventListener("visibilitychange",function(){if(document.visibilityState==="visible")sync()});
+setInterval(function(){if(document.visibilityState==="visible")sync()},60000);
 try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist().catch(function(){})}catch(e){}
-// Ouverture sans réseau et installation comme application.
 if("serviceWorker" in navigator){window.addEventListener("load",function(){navigator.serviceWorker.register("sw.js").catch(function(){})})}
 </script>
 </body>
