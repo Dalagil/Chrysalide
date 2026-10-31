@@ -3,6 +3,7 @@
 # Toujours en HTTPS (obligatoire pour installer l'appli). À activer une fois le certificat SSL en place.
 RewriteEngine On
 RewriteCond %{HTTPS} !=on
+RewriteCond %{REQUEST_URI} !^/\.well-known/
 RewriteCond %{HTTP:X-Forwarded-Proto} !=https
 RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 
