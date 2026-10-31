@@ -20,7 +20,7 @@ CREATE TABLE IF NOT EXISTS chry_notes (
   rev        BIGINT       NOT NULL,                 -- numéro de version côté serveur
   PRIMARY KEY (user_id, id),
   KEY by_rev (user_id, rev),
-  CONSTRAINT fk_notes_user FOREIGN KEY (user_id) REFERENCES chry_users(id) ON DELETE CASCADE
+  FOREIGN KEY (user_id) REFERENCES chry_users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS chry_counter (
